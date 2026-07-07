@@ -75,11 +75,12 @@ body{
 <div class="hdr">
   <h1>颱風巴威　路徑劇本示意動畫</h1>
   <p>2026 年第 9 號颱風　｜　三種路徑劇本分析（真實地圖）</p>
+  <p style="margin-top:2px;font-size:.68rem;color:#3A5A78">資料更新：2026/07/07 02時（中央氣象署）</p>
 </div>
 
 <div class="tabs">
-  <button class="tab a1" data-s="1">劇本一：直撲登陸</button>
-  <button class="tab"    data-s="2">劇本二：北部擦邊</button>
+  <button class="tab"    data-s="1">劇本一：偏西逼近</button>
+  <button class="tab a2" data-s="2">劇本二：東北外海通過</button>
   <button class="tab"    data-s="3">劇本三：偏東宮古</button>
 </div>
 
@@ -101,14 +102,14 @@ body{
     </div>
     <div class="card">
       <div class="lbl">路徑劇本</div>
-      <div class="sc-title" id="sc-name" style="color:var(--c1l)">劇本一：直撲登陸</div>
-      <div class="sc-prob" id="sc-prob">機率 30–40%</div>
-      <div class="sc-desc" id="sc-desc">颱風中心直接登陸穿越台灣，全台風雨強烈，農業損失及土石流風險最高。</div>
+      <div class="sc-title" id="sc-name" style="color:var(--c2l)">劇本二：東北部外海通過（氣象署官方預測）</div>
+      <div class="sc-prob" id="sc-prob">機率約 50%</div>
+      <div class="sc-desc" id="sc-desc">中央氣象署最新路徑：颱風北轉後從台灣東北部外海、與宮古島之間通過，不登陸但暴風圈掃過北部、宜蘭、花蓮，仍有明顯風雨。</div>
     </div>
     <div class="card leg">
       <div style="font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:7px">圖例</div>
-      <div class="leg-row"><div class="leg-dot" style="background:var(--c1)"></div>劇本一：直撲登陸</div>
-      <div class="leg-row"><div class="leg-dot" style="background:var(--c2)"></div>劇本二：北部擦邊</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--c1)"></div>劇本一：偏西逼近</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--c2)"></div>劇本二：東北外海通過</div>
       <div class="leg-row"><div class="leg-dot" style="background:var(--c3)"></div>劇本三：偏東宮古</div>
       <div class="leg-row" style="margin-top:5px">
         <div class="leg-dot" style="background:#D4711A;border:1px solid #F5C842"></div>台灣（橙色標示）
@@ -150,46 +151,46 @@ function xy(lon, lat) {
 // ── 劇本資料 ─────────────────────────────────────────────────────────────────
 const SC = {
   1:{color:'#E53845',light:'#FF949C',cls:'a1',
-      name:'劇本一：直撲登陸',prob:'機率 30–40%',
-      desc:'颱風中心直接登陸穿越台灣，全台風雨強烈，農業損失及土石流風險最高。',
+      name:'劇本一：偏西逼近（JMA／中國模式）',prob:'機率約 30%',
+      desc:'日本氣象廳與中國氣象局模式路徑偏西，颱風經石垣島與台灣之間通過，不排除觸邊或登陸台灣東北部，風雨最劇烈。',
       wps:[
         {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.0,lat:13.0,date:'7/5',it:.65,lbl:''},
-        {lon:144.8,lat:13.5,date:'7/6',it:1.0, lbl:'Cat 4–5'},
-        {lon:140.0,lat:14.5,date:'7/7',it:.95,lbl:''},
-        {lon:135.0,lat:17.0,date:'7/8',it:.90,lbl:''},
-        {lon:130.0,lat:21.0,date:'7/9',it:.95,lbl:'北轉'},
-        {lon:126.0,lat:23.0,date:'7/10',it:1.0,lbl:''},
-        {lon:121.8,lat:24.5,date:'7/11',it:1.0,lbl:'登陸'},
-        {lon:119.0,lat:27.0,date:'7/12',it:.55,lbl:''},
+        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
+        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
+        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
+        {lon:131.5,lat:16.8,date:'7/8',it:.95,lbl:''},
+        {lon:128.5,lat:17.5,date:'7/9',it:.92,lbl:'北轉'},
+        {lon:124.5,lat:19.8,date:'7/10',it:.95,lbl:'逼近台灣'},
+        {lon:121.0,lat:23.2,date:'7/11',it:1.0,lbl:'觸邊/登陸東北部'},
+        {lon:118.5,lat:26.0,date:'7/12',it:.55,lbl:'減弱北移'},
       ]},
   2:{color:'#F09A55',light:'#FFD4A8',cls:'a2',
-      name:'劇本二：北部擦邊',prob:'機率約 40%',
-      desc:'暴風圈掃過台灣北部及東北角，北部、宜蘭重創，中南部影響相對較輕。',
+      name:'劇本二：東北部外海通過（氣象署官方預測）',prob:'機率約 50%',
+      desc:'中央氣象署最新路徑：颱風北轉後從台灣東北部外海、與宮古島之間通過，不登陸但暴風圈掃過北部、宜蘭、花蓮，仍有明顯風雨。',
       wps:[
         {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.0,lat:13.0,date:'7/5',it:.65,lbl:''},
-        {lon:144.8,lat:13.5,date:'7/6',it:1.0, lbl:'關島'},
-        {lon:140.0,lat:14.5,date:'7/7',it:.95,lbl:''},
-        {lon:135.0,lat:17.0,date:'7/8',it:.90,lbl:''},
-        {lon:130.0,lat:22.0,date:'7/9',it:.90,lbl:'北轉'},
-        {lon:127.0,lat:24.5,date:'7/10',it:.95,lbl:''},
-        {lon:123.0,lat:26.5,date:'7/11',it:.85,lbl:'擦北台'},
-        {lon:122.0,lat:30.0,date:'7/12',it:.60,lbl:''},
+        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
+        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
+        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
+        {lon:132.7,lat:17.3,date:'7/8',it:.95,lbl:''},
+        {lon:130.8,lat:17.9,date:'7/9',it:.90,lbl:'北轉'},
+        {lon:127.1,lat:20.5,date:'7/10',it:.90,lbl:'加速北轉'},
+        {lon:123.7,lat:24.3,date:'7/11',it:.75,lbl:'最接近台灣/宮古'},
+        {lon:120.2,lat:28.6,date:'7/12',it:.55,lbl:'北上東海'},
       ]},
   3:{color:'#48AA78',light:'#A0E5C8',cls:'a3',
-      name:'劇本三：偏東宮古',prob:'機率不到 20%',
-      desc:'颱風中心經宮古島一帶北上，台灣外圍環流影響，東部可能有風雨，直接威脅最低。',
+      name:'劇本三：偏東經宮古北上',prob:'機率約 20%',
+      desc:'颱風中心更偏東、更早北轉，主要經宮古島以東北上，台灣僅受外圍環流影響，直接威脅最低。',
       wps:[
         {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.0,lat:13.0,date:'7/5',it:.65,lbl:''},
-        {lon:144.8,lat:13.5,date:'7/6',it:1.0, lbl:'關島'},
-        {lon:140.0,lat:14.5,date:'7/7',it:.95,lbl:''},
-        {lon:135.0,lat:17.0,date:'7/8',it:.90,lbl:''},
-        {lon:130.5,lat:22.0,date:'7/9',it:.85,lbl:'北轉'},
-        {lon:128.0,lat:25.0,date:'7/10',it:.80,lbl:'宮古'},
-        {lon:126.0,lat:28.0,date:'7/11',it:.70,lbl:''},
-        {lon:124.0,lat:33.0,date:'7/12',it:.50,lbl:'北上'},
+        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
+        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
+        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
+        {lon:134.0,lat:17.6,date:'7/8',it:.90,lbl:''},
+        {lon:132.5,lat:18.8,date:'7/9',it:.85,lbl:'北轉'},
+        {lon:129.5,lat:22.0,date:'7/10',it:.80,lbl:'經宮古島'},
+        {lon:126.5,lat:26.5,date:'7/11',it:.65,lbl:'北上'},
+        {lon:124.0,lat:31.0,date:'7/12',it:.45,lbl:'遠離台灣'},
       ]},
 };
 
@@ -206,7 +207,7 @@ function getPos(wps,t){
            it:lerp(A.it,B.it,fr),date:A.date,
            lbl:fr<.3&&A.lbl?A.lbl:(fr>.75&&B.lbl?B.lbl:'')};
 }
-function iStats(v){return {ms:Math.round(20+v*43),hpa:Math.round(1010-v*100)};}
+function iStats(v){return {ms:Math.round(15+v*45),hpa:Math.round(1015-v*120)};}
 
 function drawGhostPaths(sc){
   [1,2,3].forEach(s=>{
@@ -356,7 +357,7 @@ document.getElementById('replay-btn').addEventListener('click',()=>startScenario
 // 等圖片載入再初始化
 function init(){
   syncSize();
-  startScenario(1);
+  startScenario(2);
 }
 if(mapbg.complete&&mapbg.naturalWidth)init();
 else mapbg.addEventListener('load',init);
