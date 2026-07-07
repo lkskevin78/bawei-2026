@@ -75,7 +75,7 @@ body{
 <div class="hdr">
   <h1>颱風巴威　路徑劇本示意動畫</h1>
   <p>2026 年第 9 號颱風　｜　三種路徑劇本分析（真實地圖）</p>
-  <p style="margin-top:2px;font-size:.68rem;color:#3A5A78">資料更新：2026/07/07 02時（中央氣象署）</p>
+  <p id="data-updated" style="margin-top:2px;font-size:.68rem;color:#3A5A78">資料更新：2026/07/07 02時（中央氣象署）</p>
 </div>
 
 <div class="tabs">
@@ -148,51 +148,8 @@ function xy(lon, lat) {
   ];
 }
 
-// ── 劇本資料 ─────────────────────────────────────────────────────────────────
-const SC = {
-  1:{color:'#E53845',light:'#FF949C',cls:'a1',
-      name:'劇本一：偏西逼近（JMA／中國模式）',prob:'機率約 30%',
-      desc:'日本氣象廳與中國氣象局模式路徑偏西，颱風經石垣島與台灣之間通過，不排除觸邊或登陸台灣東北部，風雨最劇烈。',
-      wps:[
-        {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
-        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
-        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
-        {lon:131.5,lat:16.8,date:'7/8',it:.95,lbl:''},
-        {lon:128.5,lat:17.5,date:'7/9',it:.92,lbl:'北轉'},
-        {lon:124.5,lat:19.8,date:'7/10',it:.95,lbl:'逼近台灣'},
-        {lon:121.0,lat:23.2,date:'7/11',it:1.0,lbl:'觸邊/登陸東北部'},
-        {lon:118.5,lat:26.0,date:'7/12',it:.55,lbl:'減弱北移'},
-      ]},
-  2:{color:'#F09A55',light:'#FFD4A8',cls:'a2',
-      name:'劇本二：東北部外海通過（氣象署官方預測）',prob:'機率約 50%',
-      desc:'中央氣象署最新路徑：颱風北轉後從台灣東北部外海、與宮古島之間通過，不登陸但暴風圈掃過北部、宜蘭、花蓮，仍有明顯風雨。',
-      wps:[
-        {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
-        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
-        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
-        {lon:132.7,lat:17.3,date:'7/8',it:.95,lbl:''},
-        {lon:130.8,lat:17.9,date:'7/9',it:.90,lbl:'北轉'},
-        {lon:127.1,lat:20.5,date:'7/10',it:.90,lbl:'加速北轉'},
-        {lon:123.7,lat:24.3,date:'7/11',it:.75,lbl:'最接近台灣/宮古'},
-        {lon:120.2,lat:28.6,date:'7/12',it:.55,lbl:'北上東海'},
-      ]},
-  3:{color:'#48AA78',light:'#A0E5C8',cls:'a3',
-      name:'劇本三：偏東經宮古北上',prob:'機率約 20%',
-      desc:'颱風中心更偏東、更早北轉，主要經宮古島以東北上，台灣僅受外圍環流影響，直接威脅最低。',
-      wps:[
-        {lon:152.3,lat:12.7,date:'7/4',it:.50,lbl:'起點'},
-        {lon:148.9,lat:12.8,date:'7/5',it:.85,lbl:''},
-        {lon:143.0,lat:15.3,date:'7/6',it:1.0, lbl:'巔峰895hPa'},
-        {lon:141.1,lat:15.9,date:'7/7',it:1.0,lbl:'現況'},
-        {lon:134.0,lat:17.6,date:'7/8',it:.90,lbl:''},
-        {lon:132.5,lat:18.8,date:'7/9',it:.85,lbl:'北轉'},
-        {lon:129.5,lat:22.0,date:'7/10',it:.80,lbl:'經宮古島'},
-        {lon:126.5,lat:26.5,date:'7/11',it:.65,lbl:'北上'},
-        {lon:124.0,lat:31.0,date:'7/12',it:.45,lbl:'遠離台灣'},
-      ]},
-};
+// ── 劇本資料（由 typhoon-data.json 動態載入，供自動更新腳本改寫）───────────────
+let SC = null, TY_DATA = null;
 
 // ── 動畫 ─────────────────────────────────────────────────────────────────────
 let curS=1, animT=0, rot=0, lastTS=null, rafId=null;
@@ -354,11 +311,28 @@ document.querySelectorAll('.tab').forEach(b=>
   b.addEventListener('click',()=>startScenario(+b.dataset.s)));
 document.getElementById('replay-btn').addEventListener('click',()=>startScenario(curS));
 
-// 等圖片載入再初始化
-function init(){
+// 等圖片與颱風路徑資料都載入完成再初始化
+let imgReady=false, dataReady=false;
+function tryInit(){
+  if(!imgReady||!dataReady)return;
   syncSize();
-  startScenario(2);
+  startScenario(TY_DATA.main||2);
 }
-if(mapbg.complete&&mapbg.naturalWidth)init();
-else mapbg.addEventListener('load',init);
+if(mapbg.complete&&mapbg.naturalWidth){imgReady=true;}
+mapbg.addEventListener('load',()=>{imgReady=true;tryInit();});
+if(imgReady)tryInit();
+
+fetch('typhoon-data.json').then(r=>r.json()).then(data=>{
+  TY_DATA=data;
+  SC={};
+  [1,2,3].forEach(k=>{
+    const s=data.scenarios[k];
+    SC[k]={color:s.color,light:s.light,cls:s.cls,name:s.name,prob:s.prob,desc:s.desc,
+           wps:data.observed.concat(s.forecast)};
+  });
+  const updEl=document.getElementById('data-updated');
+  if(updEl)updEl.textContent='資料更新：'+data.updated+'（中央氣象署）';
+  dataReady=true;
+  tryInit();
+}).catch(err=>console.error('載入颱風路徑資料失敗',err));
 </script>

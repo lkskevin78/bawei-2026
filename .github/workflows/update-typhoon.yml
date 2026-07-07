@@ -1,0 +1,31 @@
+name: 自動更新颱風巴威路徑
+
+on:
+  schedule:
+    # 每4小時（UTC 2,6,10,14,18,22 = 台北時間 10,14,18,22,02,06）
+    - cron: "6 2/4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 執行更新腳本
+        run: python3 scripts/update_typhoon.py
+
+      - name: 提交並推送變更（若有）
+        run: |
+          if git diff --quiet -- typhoon-data.json; then
+            echo "沒有變更，略過提交。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add typhoon-data.json
+          git commit -m "auto: 更新颱風巴威路徑資料"
+          git push
