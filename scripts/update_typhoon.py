@@ -84,6 +84,14 @@ def parse_forecast(html):
     return out
 
 
+def parse_updated_ts(updated_str):
+    m = re.match(r"(\d{4})/(\d{2})/(\d{2}) (\d{2})時", updated_str)
+    if not m:
+        return None
+    year, mon, day, hour = map(int, m.groups())
+    return datetime(year, mon, day, hour, tzinfo=TAIPEI)
+
+
 def branch_offset(lon, lat, radius_km, lon_factor, lat_factor):
     off_lon = radius_km / (111 * math.cos(math.radians(lat))) * lon_factor
     off_lat = radius_km / 111 * lat_factor
@@ -122,6 +130,18 @@ def main():
         return 0
 
     data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+
+    # 保險機制：檢查「上一次資料」在這次執行前是否已超過8小時沒更新
+    # （若排程有漏跳，這裡會在 Actions log 顯示明顯警示，方便追蹤排程健康度）
+    prev_ts = parse_updated_ts(data.get("updated", ""))
+    if prev_ts:
+        hours_stale = (now - prev_ts).total_seconds() / 3600
+        if hours_stale > 8:
+            print(f"::warning::上一次資料時間為 {data['updated']}，距今已 {hours_stale:.1f} 小時未更新（超過8小時門檻），"
+                  f"可能是排程漏跳，本次會補上最新資料。")
+        else:
+            print(f"距上次更新 {hours_stale:.1f} 小時，正常範圍內。")
+
     today_date_str = f"{cur['month']}/{cur['day']}"
     today_md = (cur["month"], cur["day"])
 

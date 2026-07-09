@@ -76,6 +76,7 @@ body{
   <h1>颱風巴威　路徑劇本示意動畫</h1>
   <p>2026 年第 9 號颱風　｜　三種路徑劇本分析（真實地圖）</p>
   <p id="data-updated" style="margin-top:2px;font-size:.68rem;color:#3A5A78">資料更新：2026/07/07 02時（中央氣象署）</p>
+  <p id="stale-warning" style="display:none;margin-top:6px;font-size:.72rem;color:#FFD24A;background:rgba(255,180,30,.1);border:1px solid rgba(255,180,30,.4);border-radius:4px;padding:5px 10px">⚠ 資料已超過8小時未更新，可能非最新，請至中央氣象署官網確認</p>
 </div>
 
 <div class="tabs">
@@ -332,6 +333,16 @@ fetch('typhoon-data.json').then(r=>r.json()).then(data=>{
   });
   const updEl=document.getElementById('data-updated');
   if(updEl)updEl.textContent='資料更新：'+data.updated+'（中央氣象署）';
+
+  // 資料新鮮度檢查：超過8小時未更新就顯示警示（用瀏覽器當下時間比對，不受排程漏跳影響）
+  const m=data.updated.match(/(\d{4})\/(\d{2})\/(\d{2}) (\d{2})時/);
+  if(m){
+    const updTs=Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-8,0,0); // 台北時間轉UTC
+    const hoursSince=(Date.now()-updTs)/3600000;
+    const warnEl=document.getElementById('stale-warning');
+    if(warnEl&&hoursSince>8)warnEl.style.display='block';
+  }
+
   dataReady=true;
   tryInit();
 }).catch(err=>console.error('載入颱風路徑資料失敗',err));
